@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  camfit-getter:
+    build: .
+    container_name: camfit-monitoring
+    restart: unless-stopped
+    environment:
+      # 환경 변수는 .env 파일에서 자동으로 로드됩니다
+      - NODE_ENV=production
+    volumes:
+      # 로그 파일을 호스트와 공유
+      - ./logs:/app/logs
+      # 환경설정 파일 마운트
+      - ./.env:/app/.env:ro
+    # 메모리 제한 설정 (Puppeteer 사용 고려)
+    mem_limit: 1g
+    mem_reservation: 512m
+    # CPU 제한
+    cpus: '0.5'
+    # 보안 설정
+    security_opt:
+      - no-new-privileges:true
+    # 네트워크 모드 (필요시)
+    # network_mode: "host"
+
+    # 헬스체크
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('Health check passed')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
