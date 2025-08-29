@@ -63,3 +63,9 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+# Chrome profile and cache files
+.chrome_profile/
+.bmad-core/
+.cursor/
+.github/
