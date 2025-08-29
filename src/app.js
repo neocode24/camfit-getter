@@ -26,10 +26,13 @@ class CamfitGetterApp {
   // 애플리케이션 초기화
   initialize = async () => {
     try {
+      console.log('🚀 캠핏 게터 애플리케이션 시작 중...');
       logger.info('캠핏 게터 애플리케이션 시작');
 
       // 헬스체크 서버 시작
+      console.log('🏥 헬스체크 서버 시작 중...');
       await this.healthServer.start();
+      console.log('✅ 헬스체크 서버 시작 완료');
 
       // 로그 디렉토리 생성
       this.ensureLogDirectory();
@@ -46,9 +49,11 @@ class CamfitGetterApp {
       // 종료 시그널 핸들링 설정
       this.setupGracefulShutdown();
 
+      console.log('✅ 애플리케이션 초기화 완료');
       logger.info('애플리케이션 초기화 완료');
 
     } catch (error) {
+      console.error('❌ 애플리케이션 초기화 실패:', error.message);
       logger.error('애플리케이션 초기화 실패', { error: error.message });
       throw error;
     }
