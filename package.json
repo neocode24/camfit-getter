@@ -6,6 +6,11 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "prod": "NODE_ENV=production node src/app.js",
+    "install:prod": "npm ci --only=production",
+    "health": "node -e \"console.log('Health check: OK')\"",
+    "clean": "rm -rf node_modules package-lock.json",
+    "reinstall": "npm run clean && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

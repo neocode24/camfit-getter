@@ -52,9 +52,9 @@ WORKDIR /app
 # npm 캐시 디렉토리 설정 및 권한 조정
 RUN mkdir -p /root/.npm && chmod 755 /root/.npm
 
-# 패키지 파일 복사 및 의존성 설치 (SSL 설정 분리)
+# 패키지 파일 복사 및 의존성 설치 (npm ci 사용으로 개선)
 COPY package*.json ./
-RUN npm install --production --no-audit --no-fund \
+RUN npm ci --only=production --no-audit --no-fund \
     && npm cache clean --force
 
 # 애플리케이션 소스 코드 복사
