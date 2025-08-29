@@ -141,6 +141,114 @@ camfit-getter/
    - 캠핏 웹사이트 구조가 변경되었을 수 있음
    - 네트워크 연결 상태 확인
 
+## 배포
+
+### Docker를 사용한 로컬 배포
+
+```bash
+# Docker 이미지 빌드
+docker build -t camfit-getter .
+
+# 컨테이너 실행
+docker run -d --name camfit-getter \
+  --env-file .env \
+  -p 3000:3000 \
+  camfit-getter
+```
+
+### Cloudtype.io를 사용한 클라우드 배포
+
+#### 1. 준비사항
+- [Cloudtype.io](https://cloudtype.io) 계정 생성
+- GitHub 계정 연동
+- 이 저장소를 GitHub에 푸시
+
+#### 2. 배포 방법
+
+##### 방법 1: 대시보드 사용
+1. [Cloudtype.io 대시보드](https://app.cloudtype.io)에 로그인
+2. "새 프로젝트" → "GitHub에서 가져오기" 선택
+3. `camfit-getter` 저장소 선택
+4. 빌드 설정:
+   - **Runtime**: Node.js 22
+   - **Build Command**: `npm ci --only=production`
+   - **Start Command**: `npm start`
+   - **Port**: `3000`
+5. 환경변수 설정:
+   ```
+   TELEGRAM_BOT_TOKEN=your_bot_token
+   TELEGRAM_CHAT_ID=your_chat_id
+   CHECK_DATE_FROM=2024-09-13
+   CHECK_DATE_TO=2024-09-14
+   CAMP_ID=66992898908bb2001e4a650e
+   TARGET_ZONES=D ZONE,C ZONE
+   NODE_ENV=production
+   PORT=3000
+   HEADLESS=true
+   ```
+6. "배포하기" 클릭
+
+##### 방법 2: CLI 사용 (권장)
+1. Cloudtype CLI 설치:
+   ```bash
+   npm install -g @cloudtype/cli
+   ```
+
+2. 로그인:
+   ```bash
+   ctype login
+   ```
+
+3. 배포:
+   ```bash
+   ctype deploy
+   ```
+   
+   또는
+   
+   ```bash
+   ctype apply
+   ```
+
+#### 3. 환경변수 설정
+Cloudtype.io 대시보드에서 다음 환경변수들을 설정해야 합니다:
+
+**필수 환경변수:**
+```bash
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_CHAT_ID=your_telegram_chat_id
+CHECK_DATE_FROM=2024-09-13
+CHECK_DATE_TO=2024-09-14
+CAMP_ID=66992898908bb2001e4a650e
+TARGET_ZONES=D ZONE,C ZONE
+```
+
+**선택적 환경변수:**
+```bash
+MONITORING_INTERVAL=5
+ADULTS_COUNT=2
+YOUTH_COUNT=2
+LOG_LEVEL=info
+NODE_ENV=production
+PORT=3000
+HEADLESS=true
+NODE_TLS_REJECT_UNAUTHORIZED=0
+```
+
+#### 4. 배포 확인
+- 배포 후 `https://your-app-name.run.cloudtype.app/health` 접속하여 헬스체크 확인
+- `https://your-app-name.run.cloudtype.app/` 접속하여 서비스 상태 확인
+
+#### 5. 프리티어 제한사항
+Cloudtype.io 프리티어에서는 다음과 같은 제한이 있습니다:
+- **CPU**: 0.25 코어
+- **메모리**: 512MB
+- **스토리지**: 1GB
+- **트래픽**: 1GB/월
+- **슬립 모드**: 30분 비활성 시 자동 슬립
+
+이 제한사항을 고려하여 `MONITORING_INTERVAL`을 5분 이상으로 설정하는 것을 권장합니다.
+
 ## 라이선스
 
 MIT License

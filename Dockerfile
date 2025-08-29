@@ -57,6 +57,9 @@ COPY package*.json ./
 RUN npm ci --only=production --no-audit --no-fund \
     && npm cache clean --force
 
+# .cloudtype 디렉토리 복사 (배포 설정)
+COPY .cloudtype/ ./.cloudtype/
+
 # 애플리케이션 소스 코드 복사
 COPY src/ ./src/
 COPY env.example ./.env

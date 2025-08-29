@@ -3,6 +3,7 @@ const fs = require('fs');
 const logger = require('./utils/logger');
 const { config, validateConfig } = require('./config/settings');
 const MonitoringScheduler = require('./scheduler/monitor');
+const HealthServer = require('./server/health');
 
 // 전역 에러 핸들링
 process.on('uncaughtException', (error) => {
@@ -18,6 +19,7 @@ process.on('unhandledRejection', (reason, promise) => {
 class CamfitGetterApp {
   constructor() {
     this.scheduler = new MonitoringScheduler();
+    this.healthServer = new HealthServer(process.env.PORT || 3000);
     this.isShuttingDown = false;
   }
 
@@ -25,6 +27,9 @@ class CamfitGetterApp {
   initialize = async () => {
     try {
       logger.info('캠핏 게터 애플리케이션 시작');
+
+      // 헬스체크 서버 시작
+      await this.healthServer.start();
 
       // 로그 디렉토리 생성
       this.ensureLogDirectory();
@@ -99,6 +104,9 @@ class CamfitGetterApp {
       // 모니터링 중지
       await this.scheduler.stop(`신호: ${signal}`);
       
+      // 헬스체크 서버 중지
+      await this.healthServer.stop();
+
       logger.info('애플리케이션 정상 종료 완료');
       process.exit(0);
 
